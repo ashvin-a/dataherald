@@ -294,8 +294,8 @@ class TablesSQLDatabaseTool(BaseSQLDatabaseTool, BaseTool):
         df["similarities"] = df.table_embedding.apply(
             lambda x: self.cosine_similarity(x, question_embedding)
         )
-        df = df.sort_values(by="similarities", ascending=True)
-        df = df.tail(TOP_TABLES)
+        df = df.sort_values(by="similarities", ascending=False)
+        df = df.head(TOP_TABLES)
         most_similar_tables = self.similar_tables_based_on_few_shot_examples(df)
         table_relevance = ""
         for _, row in df.iterrows():
@@ -655,8 +655,9 @@ class DataheraldSQLAgent(SQLGenerator):
         input_variables: List[str] | None = None,
         max_examples: int = 20,
         number_of_instructions: int = 1,
-        max_iterations: int
-        | None = int(os.getenv("AGENT_MAX_ITERATIONS", "15")),  # noqa: B008
+        max_iterations: int | None = int(
+            os.getenv("AGENT_MAX_ITERATIONS", "15")
+        ),  # noqa: B008
         max_execution_time: float | None = None,
         early_stopping_method: str = "generate",
         verbose: bool = False,
